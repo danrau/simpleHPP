@@ -18,4 +18,4 @@ example: `int a = randge(5, 10) // It will generate a random number between 5 an
 - will output a link to the original GitHub repository and the current version of simpleHPP
 
 ---
-_Thank you by using **simpleHPP**! Good luck!_
+_Thank you for using **simpleHPP**! Good luck!_
