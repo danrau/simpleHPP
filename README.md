@@ -16,4 +16,6 @@ also you may use:
 example: `int a = randge(5, 10) // It will generate a random number between 5 and 10.`
 ### simpleHPP
 - will output a link to the original GitHub repository and the current version of simpleHPP
-=== Thank you by using simpleHPP! Good luck!
+
+  
+> _Thank you by using **simpleHPP**! Good luck!_
