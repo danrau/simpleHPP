@@ -10,7 +10,7 @@ also you may use:
 * wait_min -- minutes
 ## randint
 - It generates a random number (by default between 1 and 100, though you can change the range in the 'simple.hpp' source code).
-example `int a = randint();`
+- example: `int a = randint();`
 ## randge
 - Gets a random number from the range.
 example: `int a = randge(5, 10) // It will generate a random number between 5 and 10.`
