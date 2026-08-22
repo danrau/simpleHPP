@@ -3,7 +3,7 @@ This add-on makes managing basic needs easier and simpler.
 
 ## wait_**
 - This will cause the code to wait for a specific amount of time.
-example: ```C++
+example: ``C++`
   wait_sec(3);
   ```
 also you may use:
