@@ -6,12 +6,30 @@
 #include <thread>
 #include <cstdlib>
 #include <random>
+#include <cassert>
 
 const std::string simpleHPPversion = "simpleHPP.v0-1";
 
 void simpleHPP() {
     std::cout << "Git: \"https://github.com/danrau/simpleHPP?tab=readme-ov-file\"" << std::endl;
     std::cout << simpleHPPversion << std::endl;
+}
+
+inline std::string gen_progres_bar(int percent) {
+    assert(percent >= 0);
+    assert(percent <= 100);
+
+    std::string bar = "[";
+    for (int i = 0; i < percent; i++) {
+        bar += "#";
+    }
+    if (percent != 100) {
+        for (int i = 0; i < 100 - percent; i++) {
+            bar += "O";
+        }
+    }
+    bar += "] " + std::to_string(percent) + "%";
+    return bar;
 }
 
 inline int randge(int min, int max) {

@@ -10,10 +10,13 @@ also you may use:
 * wait_min -- minutes
 ## randint
 - It generates a random number (by default between 1 and 100, though you can change the range in the 'simple.hpp' source code).
-- example: `int a = randint();`
+example: `int a = randint();`
 ## randge
 - Gets a random number from the range.
 example: `int a = randge(5, 10) // It will generate a random number between 5 and 10.`
+## gen_progres_bar
+- Generate a progress bar (It's beta-version).
+example: `string bar = gen_progres_bar(5) // 5 - push there a num from 0 to 100. `
 ### simpleHPP
 - will output a link to the original GitHub repository and the current version of simpleHPP
 
