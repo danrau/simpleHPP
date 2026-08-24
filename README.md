@@ -18,7 +18,7 @@ It generates a random number (by default between 1 and 100, though you can chang
 Gets a random number from the range.
 - example: `int a = randge(5, 10); // It will generate a random number between 5 and 10.`
 ## gen_progres_bar
-Generate a progress bar (It's beta-version).
+Generate a progress bar.
 - example: `string bar = gen_progres_bar(5); // 5 - push there a num from 0 to 100. `
 ## Timer
 Need to count time? Easy-to-use Timer will help.
