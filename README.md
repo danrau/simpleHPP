@@ -1,22 +1,25 @@
 # simpleHPP | v0.1a
 This add-on makes managing basic needs easier and simpler.
 
+## wait
+Basic wait is work on milliseconds
+example: `wait(3000);`
 ## wait_**
-- This will cause the code to wait for a specific amount of time.
+This will cause the code to wait for a specific amount of time.
 example: `wait_sec(3);`
 also you may use:
 * wait_mcsec -- macroseconds
-* wait_mlsec -- miliseconds
+* wait_mlsec -- milliseconds
 * wait_min -- minutes
 ## randint
- It generates a random number (by default between 1 and 100, though you can change the range in the 'simple.hpp' source code).
+It generates a random number (by default between 1 and 100, though you can change the range in the 'simple.hpp' source code).
 - example: `int a = randint();`
 ## randge
 Gets a random number from the range.
-- example: `int a = randge(5, 10) // It will generate a random number between 5 and 10.`
+- example: `int a = randge(5, 10); // It will generate a random number between 5 and 10.`
 ## gen_progres_bar
 Generate a progress bar (It's beta-version).
-- example: `string bar = gen_progres_bar(5) // 5 - push there a num from 0 to 100. `
+- example: `string bar = gen_progres_bar(5); // 5 - push there a num from 0 to 100. `
 ## Timer
 Need to count time? Easy-to-use Timer will help.
 1. Create timer-device. `Timer w;`
