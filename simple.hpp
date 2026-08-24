@@ -8,26 +8,44 @@
 #include <random>
 #include <cassert>
 
-const std::string simpleHPPversion = "simpleHPP.v0-1";
+const std::string simpleHPPversion = "simpleHPP::v0.1a";
 
 void simpleHPP() {
-    std::cout << "Git: \"https://github.com/danrau/simpleHPP?tab=readme-ov-file\"" << std::endl;
+    std::cout << "Git: \"https://github.com/danrau/simpleHPP\" " << std::endl;
     std::cout << simpleHPPversion << std::endl;
 }
+
+inline std::string input(std::string prompt) {
+    std::string result;
+    std::cout << prompt;
+    if (std::cin.rdbuf()->in_avail() > 0) {
+        for (int i = std::cin.rdbuf()->in_avail(); i > 0; i--) {
+            std::cin.ignore();
+        }
+    }
+    getline(std::cin, result);
+    return result;
+}
+
+class Timer {
+    public:
+    using TimePoint = std::chrono::time_point<std::chrono::high_resolution_clock>;
+    TimePoint start_time;
+    TimePoint end_time;
+    void start() {start_time = std::chrono::high_resolution_clock::now();}
+    void end() {end_time = std::chrono::high_resolution_clock::now();}
+    long long int get_time() {return std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();}
+};
 
 inline std::string gen_progres_bar(int percent) {
     assert(percent >= 0);
     assert(percent <= 100);
-
+    if (percent < 0 || percent > 100) std::abort();
     std::string bar = "[";
-    for (int i = 0; i < percent; i++) {
-        bar += "#";
-    }
-    if (percent != 100) {
-        for (int i = 0; i < 100 - percent; i++) {
-            bar += "O";
-        }
-    }
+    int hashes = percent / 10;
+    int dashes = 10 - hashes;
+    bar += std::string(hashes, '#');
+    bar += std::string(dashes, '-');
     bar += "] " + std::to_string(percent) + "%";
     return bar;
 }
@@ -41,6 +59,10 @@ inline int randge(int min, int max) {
 
 inline int randint() {
     return randge(1, 100); // This is default numbers. You may change they if you need.
+}
+
+inline void wait(int i) { // basic wait work on milliseconds
+    std::this_thread::sleep_for(std::chrono::milliseconds(i));
 }
 
 inline void wait_mcsec(int mcsec) {
