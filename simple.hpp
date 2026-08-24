@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits>
 #include <iostream>
 #include <string>
 #include <chrono>
@@ -8,33 +9,68 @@
 #include <random>
 #include <cassert>
 
-const std::string simpleHPPversion = "simpleHPP::v0.1a";
+namespace simple {
 
-void simpleHPP() {
-    std::cout << "Git: \"https://github.com/danrau/simpleHPP\" " << std::endl;
+const std::string simpleHPPversion = "simpleHPP | v0.1b";
+
+inline void simpleHPP() {
+    std::cout << "Git:\"https://github.com/danrau/simpleHPP\"" << std::endl;
     std::cout << simpleHPPversion << std::endl;
+    std::cout << "Mail: blink.dagger1337@icloud.com" << std::endl;
 }
 
-inline std::string input(std::string prompt) {
+inline std::string input(std::string prompt = "") {
     std::string result;
-    std::cout << prompt;
+
+    if (!prompt.empty()) std::cout << prompt;
+    #if defined(_WIN32) || defined(_WIN64)
     if (std::cin.rdbuf()->in_avail() > 0) {
         for (int i = std::cin.rdbuf()->in_avail(); i > 0; i--) {
             std::cin.ignore();
         }
     }
+    #else
+    if (std::cin.peek() != EOF && std::cin.peek() != '\n') {
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    #endif
+    if (std::cin.peek() == '\n') {
+        std::cin.ignore();
+    }
+
     getline(std::cin, result);
     return result;
 }
 
 class Timer {
+    private:
+        using TimePoint = std::chrono::time_point<std::chrono::high_resolution_clock>;
+
+        TimePoint start_time;
+        TimePoint end_time;
+
     public:
-    using TimePoint = std::chrono::time_point<std::chrono::high_resolution_clock>;
-    TimePoint start_time;
-    TimePoint end_time;
-    void start() {start_time = std::chrono::high_resolution_clock::now();}
-    void end() {end_time = std::chrono::high_resolution_clock::now();}
-    long long int get_time() {return std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();}
+        void start() {
+            start_time = std::chrono::high_resolution_clock::now();
+        }
+
+        void end() {
+            end_time = std::chrono::high_resolution_clock::now();
+        }
+
+        void clear() {
+            start_time = TimePoint();
+            end_time = TimePoint();
+        }
+
+        long long int get_time() {
+            if (start_time == TimePoint()) return 0;
+            if (end_time == TimePoint()) {
+                auto now = std::chrono::high_resolution_clock::now();
+                return std::chrono::duration_cast<std::chrono::microseconds>(now - start_time).count();
+            }
+            return std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
+        }
 };
 
 inline std::string gen_progres_bar(int percent) {
@@ -50,37 +86,34 @@ inline std::string gen_progres_bar(int percent) {
     return bar;
 }
 
-inline int randge(int min, int max) {
+inline int randint(int min = 1, int max = 100) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> dist(min, max);
     return dist(gen);
 }
 
-inline int randint() {
-    return randge(1, 100); // This is default numbers. You may change they if you need.
-}
 
-inline void wait(int i) { // basic wait work on milliseconds
-    std::this_thread::sleep_for(std::chrono::milliseconds(i));
-}
+enum class WaitUnit {
+    Microseconds,
+    Milliseconds,
+    Seconds,
+    Minutes
+};
 
-inline void wait_mcsec(int mcsec) {
-    std::this_thread::sleep_for(std::chrono::microseconds(mcsec));
-}
-
-inline void wait_min(int min) {
-    std::this_thread::sleep_for(std::chrono::minutes(min));
-}
-
-inline void wait_mlsec(int mlsec) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(mlsec));
-}
-
-inline void wait_sec(int secnd) {
-    std::this_thread::sleep_for(std::chrono::seconds(secnd));
+inline void wait(int time, WaitUnit unit = WaitUnit::Milliseconds) {
+    if (unit == WaitUnit::Milliseconds) std::this_thread::sleep_for(std::chrono::milliseconds(time));
+    else if (unit == WaitUnit::Microseconds) std::this_thread::sleep_for(std::chrono::microseconds(time));
+    else if (unit == WaitUnit::Seconds) std::this_thread::sleep_for(std::chrono::seconds(time));
+    else if (unit == WaitUnit::Minutes) std::this_thread::sleep_for(std::chrono::minutes(time));
 }
 
 inline void ccls() {
-    std::system("cls");
+    #if defined(_WIN32) || defined(_WIN64)
+        std::system("cls");
+    #else
+        std::system("clear");
+    #endif
+}
+
 }

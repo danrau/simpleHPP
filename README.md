@@ -1,36 +1,137 @@
-# simpleHPP
-This add-on makes managing basic needs easier and simpler.
+# simpleHPP | v0.1a
 
-## wait_**
-- This will cause the code to wait for a specific amount of time.
-example: `wait_sec(3);`
-also you may use:
-* wait_mcsec -- macroseconds
-* wait_mlsec -- miliseconds
-* wait_min -- minutes
-## randint
- It generates a random number (by default between 1 and 100, though you can change the range in the 'simple.hpp' source code).
-- example: `int a = randint();`
-## randge
-Gets a random number from the range.
-- example: `int a = randge(5, 10) // It will generate a random number between 5 and 10.`
-## gen_progres_bar
-Generate a progress bar (It's beta-version).
-- example: `string bar = gen_progres_bar(5) // 5 - push there a num from 0 to 100. `
-## Timer
-> Need to count time? Easy-to-use Timer will help.
-1. Create timer-device. `Timer w;`
-2. Start counting time. `w.start();`
-3. End counting time. `w.end();`
-4. Get a result! `w.get_time();`;
-> I haven't gotten around to clearing the timer yet, but I definitely will in the next version!
-## input
-The input() function displays a prompt and reads a string in a single command. It can accept strings containing spaces. The function automatically checks the buffer and clears the leftover "Enter" character after numeric input, protecting the code from bugs.
-- example: `std::string name = input("How are you? ");`
-> [!WARNING]
-> For now, the function *must* receive a prompt; if you don't need to display a prompt, simply leave the double quotes empty (`std::string name = input("");`). I’ll fix this minor issue in the next version.
-### simpleHPP
-- will output a link to the original GitHub repository and the current version of simpleHPP
+A single-header C++ utility library (`simple.hpp`) providing streamlined functions for input, delays, random numbers, and execution timing.
 
 ---
-_Thank you for using **simpleHPP**! Good luck!_
+
+## Namespace Configuration
+
+All library components are defined within the `simple` namespace. The header automatically includes `using namespace simple;` at the bottom of the file.
+
+### Directly calling functions
+Because of the automatic namespace activation, you can call all library features directly without any prefixes:
+
+```cpp
+#include "simple.hpp"
+
+int main() {
+    wait(1000); 
+    Timer w;    
+}
+```
+
+### Using explicit qualification
+If you prefer explicit qualification in your codebase, you can still access every feature using the `simple::` prefix:
+
+```cpp
+#include "simple.hpp"
+
+int main() {
+    simple::wait(1000); 
+    simple::Timer w;    
+}
+```
+
+---
+
+## Detailed API Usage & Examples
+
+### 1. Delay Function (`wait`)
+Suspends program execution. By default, the integer passed represents **milliseconds**. You can optionally specify a custom time unit using `WaitUnit`.
+
+* **Available Units:** `WaitUnit::Microseconds`, `WaitUnit::Milliseconds`, `WaitUnit::Seconds`, `WaitUnit::Minutes`
+
+```cpp
+#include "simple.hpp"
+
+int main() {
+    // Delays execution for 3000 milliseconds (3 seconds)
+    wait(3000); 
+
+    // Delays execution for 5 seconds explicitly
+    wait(5, WaitUnit::Seconds);
+
+    // Delays execution for 100 microseconds
+    wait(100, WaitUnit::Microseconds);
+
+    // Delays execution for 2 minutes
+    wait(2, WaitUnit::Minutes);
+}
+```
+
+### 2. Random Numbers (`randint`)
+Generates a random integer within a specified range using a reliable pseudo-random number generator engine under the hood.
+
+```cpp
+#include "simple.hpp"
+#include <iostream>
+
+int main() {
+    // Generates a random number between 1 and 100 (Default range)
+    int rand_num = randint(); 
+
+    // Generates a random number between 5 and 15 (Custom inclusive range)
+    int custom_rand = randint(5, 15); 
+}
+```
+
+### 3. Safe Console Input (`input`)
+Prints an optional prompt string to the console and reads a line of text (including spaces). It automatically detects and clears any residual characters or trailing newlines (`\n`) from previous extractions in the input stream, preventing input skipping bugs.
+
+```cpp
+#include "simple.hpp"
+#include <string>
+
+int main() {
+    // Displays a prompt and reads the string
+    std::string name = input("Enter text: ");
+
+    // Reads a string without displaying any prompt message
+    std::string response = input(); 
+}
+```
+
+### 4. Code Execution Profiler (`Timer`)
+A high-precision stopwatch class measuring intervals in microseconds. It tracks time dynamically, allowing you to inspect elapsed intervals without resetting or halting the stopwatch state.
+
+```cpp
+#include "simple.hpp"
+#include <iostream>
+
+int main() {
+    Timer w;
+    
+    // Starts the execution timer
+    w.start();
+    
+    // ... code execution ...
+    
+    // Retrieves the current elapsed time in microseconds without stopping the timer
+    std::cout << "Elapsed: " << w.get_time() << " microseconds" << std::endl; 
+    
+    // Halts the timer and locks the final execution duration
+    w.end();   
+    
+    // Resets internal start and end checkpoints back to zero
+    w.clear(); 
+}
+```
+
+### 5. Progress Bar Generator (`gen_progres_bar`)
+Accepts an integer input representing a percentage (0 to 100) and returns a graphical loading bar formatted as a string.
+
+```cpp
+#include "simple.hpp"
+#include <iostream>
+
+int main() {
+    // Generates a 50% state progress bar string
+    std::string bar = gen_progres_bar(50); 
+    
+    std::cout << bar << std::endl; // Output: [#####-----] 50%
+}
+```
+
+### 6. Quick Utilities
+* `ccls()` — A cross-platform macro-driven function to clear the terminal screen (`cls` on Windows, `clear` on POSIX systems).
+* `simpleHPP()` — Prints out version metadata along with the link to the official source repository.
