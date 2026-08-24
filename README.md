@@ -18,7 +18,7 @@ Gets a random number from the range.
 Generate a progress bar (It's beta-version).
 - example: `string bar = gen_progres_bar(5) // 5 - push there a num from 0 to 100. `
 ## Timer
-> Need to count time? Easy-to-use Timer will help.
+Need to count time? Easy-to-use Timer will help.
 1. Create timer-device. `Timer w;`
 2. Start counting time. `w.start();`
 3. End counting time. `w.end();`
