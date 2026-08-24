@@ -1,4 +1,4 @@
-# simpleHPP | v0.1a
+# simpleHPP | V0.1B
 
 A single-header C++ utility library (`simple.hpp`) providing streamlined functions for input, delays, random numbers, and execution timing.
 
