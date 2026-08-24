@@ -1,4 +1,4 @@
-# simpleHPP
+# simpleHPP::v0.1a
 This add-on makes managing basic needs easier and simpler.
 
 ## wait_**
