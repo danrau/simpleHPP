@@ -1,4 +1,4 @@
-# simpleHPP
+# simpleHPP | V0.2A
 
 A lightweight, header-only C++ utility library designed to simplify common everyday tasks such as file I/O, console text input, benchmark timing, progress bar generation, random number generation, and cross-platform terminal control.
 
