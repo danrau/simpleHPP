@@ -13,30 +13,25 @@ namespace simple {
 
 const std::string simpleHPPversion = "simpleHPP | v0.1b";
 
+enum class TimeUnit {
+    Microseconds,
+    Milliseconds,
+    Seconds,
+    Minutes
+};
+
 inline void simpleHPP() {
     std::cout << "Git:\"https://github.com/danrau/simpleHPP\"" << std::endl;
     std::cout << simpleHPPversion << std::endl;
     std::cout << "Mail: blink.dagger1337@icloud.com" << std::endl;
 }
 
-inline std::string input(std::string prompt = "") {
+inline std::string input(const std::string& prompt = "") {
     std::string result;
 
     if (!prompt.empty()) std::cout << prompt;
-    #if defined(_WIN32) || defined(_WIN64)
-    if (std::cin.rdbuf()->in_avail() > 0) {
-        for (int i = std::cin.rdbuf()->in_avail(); i > 0; i--) {
-            std::cin.ignore();
-        }
-    }
-    #else
-    if (std::cin.peek() != EOF && std::cin.peek() != '\n') {
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    #endif
-    if (std::cin.peek() == '\n') {
-        std::cin.ignore();
-    }
+    if (!std::cin) std::cin.clear();
+    if (std::cin.peek() == '\n') std::cin.ignore();
 
     getline(std::cin, result);
     return result;
@@ -63,57 +58,68 @@ class Timer {
             end_time = TimePoint();
         }
 
-        long long int get_time() {
+        long long int getTime(TimeUnit timetype = TimeUnit::Milliseconds) const {
             if (start_time == TimePoint()) return 0;
-            if (end_time == TimePoint()) {
-                auto now = std::chrono::high_resolution_clock::now();
-                return std::chrono::duration_cast<std::chrono::microseconds>(now - start_time).count();
-            }
-            return std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
+            auto current_end = (end_time == TimePoint())
+                                ? std::chrono::high_resolution_clock::now()
+                                : end_time;
+            
+            auto duration = current_end - start_time;
+            if (timetype == TimeUnit::Microseconds) return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+            else if (timetype == TimeUnit::Milliseconds) return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+            else if (timetype == TimeUnit::Seconds) return std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+            else if (timetype == TimeUnit::Minutes) return std::chrono::duration_cast<std::chrono::minutes>(duration).count();
+            
+            std::abort();
+        }
+
+        double getTimeX() const {
+            return static_cast<double>(getTime(TimeUnit::Microseconds)) / 1000000.0;
         }
 };
 
-inline std::string gen_progres_bar(int percent) {
-    assert(percent >= 0);
-    assert(percent <= 100);
-    if (percent < 0 || percent > 100) std::abort();
+inline std::string genProgressBar(int percent) {
+    
+    if (percent < 0) percent = 0;
+    if (percent > 100) percent = 100;
+
     std::string bar = "[";
     int hashes = percent / 10;
     int dashes = 10 - hashes;
+
     bar += std::string(hashes, '#');
     bar += std::string(dashes, '-');
     bar += "] " + std::to_string(percent) + "%";
+
     return bar;
 }
 
+
+
 inline int randint(int min = 1, int max = 100) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
+    if (min > max) {
+        int backup_max = max;
+        max = min;
+        min = backup_max;
+    }
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
     std::uniform_int_distribution<int> dist(min, max);
     return dist(gen);
 }
 
 
-enum class WaitUnit {
-    Microseconds,
-    Milliseconds,
-    Seconds,
-    Minutes
-};
 
-inline void wait(int time, WaitUnit unit = WaitUnit::Milliseconds) {
-    if (unit == WaitUnit::Milliseconds) std::this_thread::sleep_for(std::chrono::milliseconds(time));
-    else if (unit == WaitUnit::Microseconds) std::this_thread::sleep_for(std::chrono::microseconds(time));
-    else if (unit == WaitUnit::Seconds) std::this_thread::sleep_for(std::chrono::seconds(time));
-    else if (unit == WaitUnit::Minutes) std::this_thread::sleep_for(std::chrono::minutes(time));
+
+inline void wait(int time, TimeUnit unit = TimeUnit::Milliseconds) {
+    if (unit == TimeUnit::Milliseconds) std::this_thread::sleep_for(std::chrono::milliseconds(time));
+    else if (unit == TimeUnit::Microseconds) std::this_thread::sleep_for(std::chrono::microseconds(time));
+    else if (unit == TimeUnit::Seconds) std::this_thread::sleep_for(std::chrono::seconds(time));
+    else if (unit == TimeUnit::Minutes) std::this_thread::sleep_for(std::chrono::minutes(time));
 }
 
 inline void ccls() {
-    #if defined(_WIN32) || defined(_WIN64)
-        std::system("cls");
-    #else
-        std::system("clear");
-    #endif
+    std::cout << "\033[2J\033[H" << std::flush;
 }
 
 }
