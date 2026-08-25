@@ -1,148 +1,121 @@
-# simpleHPP (v0.1c) 🚀
+# simpleHPP
 
-> **Language / Язык:**
-> 🌍 [English (#english-version)](#simplehpp-v01c-) | 🇷🇺 [Русский (#русская-версия)](#simplehpp-v01c-ru)
+A lightweight, header-only C++ utility library designed to simplify common everyday tasks such as file I/O, console text input, benchmark timing, progress bar generation, random number generation, and cross-platform terminal control.
+
+## 🚀 Features
+
+- **Zero Dependencies**: Header-only library (`simple.hpp`). Just include and use.
+- **File Utilities**: Simple functions to check file existence and read complete files into strings.
+- **Safe Input**: Enhanced Python-like `input()` function with automatic stream clearing.
+- **High-Resolution Timer**: Easy benchmarking with multi-unit support (Microseconds to Minutes).
+- **Progress Bar**: Generate clean, text-based progress bars instantly.
+- **Thread-Safe Randomization**: Quick pseudo-random integer and double generation using `std::mt19937`.
+- **Cross-Platform Clear Screen**: Fast ANSI terminal clearing with automated Windows Virtual Terminal initialization.
+
+## 📋 Installation
+
+Since **simpleHPP** is a header-only library, you can simply drop the header file into your project directory and include it:
+
+```cpp
+#include "simple.hpp"
+```
+
+## 🛠️ Usage Examples
+
+All features live inside the `simple` namespace.
+
+### 1. Basic Info & Setup
+```cpp
+#include "simple.hpp"
+
+int main() {
+    simple::simpleHPP(); // Prints library version, GitHub repository, and contact email
+    return 0;
+}
+```
+
+### 2. Python-like User Input
+```cpp
+std::string name = simple::input("Enter your name: ");
+std::string age_str = simple::input("Enter your age: ");
+```
+
+### 3. File Operations
+```cpp
+if (simple::hasfile("config.txt")) {
+    std::string content = simple::readfile("config.txt");
+    std::cout << "File Content:\n" << content << std::endl;
+} else {
+    std::cout << "File not found!" << std::endl;
+}
+```
+
+### 4. Code Execution Benchmarking (Timer)
+```cpp
+simple::Timer timer;
+
+timer.start();
+simple::wait(500, simple::TimeUnit::Milliseconds); // Sleep for 500ms
+timer.end();
+
+std::cout << "Elapsed time: " << timer.getTime(simple::TimeUnit::Milliseconds) << " ms" << std::endl;
+std::cout << "Elapsed time (seconds): " << timer.getTimeX() << " s" << std::endl;
+```
+
+### 5. Random Number Generation
+```cpp
+// Generates a thread-safe random integer between 10 and 50
+int random_int = simple::randint(10, 50);
+
+// Generates a thread-safe random double between 0.0 and 1.0
+double random_double = simple::randouble(0.0, 1.0);
+```
+
+### 6. Terminal Progress Bar
+```cpp
+for (int i = 0; i <= 100; i += 20) {
+    simple::ccls(); // Clear terminal screen cross-platform
+    std::cout << "Downloading: " << simple::genProgressBar(i) << std::endl;
+    simple::wait(200);
+}
+```
+
+## 🗂️ API Reference
+
+### Configuration & Namespace: `simple::`
+
+| Function / Class | Description |
+| :--- | :--- |
+| `void simpleHPP()` | Prints library banner and metadata to the standard output. |
+| `bool hasfile(const std::string& filename)` | Returns `true` if the file exists and is accessible. |
+| `std::string readfile(const std::string& filename)` | Reads an entire file into a string. Returns `""` if the file doesn't exist. |
+| `std::string input(const std::string& prompt)` | Displays an optional prompt and safely reads a full line from `std::cin`. |
+| `int randint(int min, int max)` | Generates a random uniform integer in range `[min, max]`. |
+| `double randouble(double min, double max)` | Generates a random uniform double in range `[min, max]`. |
+| `void wait(int time, TimeUnit unit)` | Pauses execution thread for a given duration. |
+| `void ccls()` | Clears the console window and resets cursor position using ANSI escape codes. |
+
+### `simple::Timer` Class
+
+* `void start()` — Starts or resets the timer checkpoint.
+* `void end()` — Stops the timer checkpoint.
+* `void clear()` — Resets internal time points.
+* `long long int getTime(TimeUnit unit)` — Returns elapsed duration as an integer. Defaults to `TimeUnit::Milliseconds`.
+* `double getTimeX()` — Returns elapsed duration in seconds as a high-precision `double`.
+
+### `simple::TimeUnit` Enum
+
+Used across `Timer` and `wait()` tools:
+* `TimeUnit::Microseconds`
+* `TimeUnit::Milliseconds`
+* `TimeUnit::Seconds`
+* `TimeUnit::Minutes`
+
+## 📄 License
+
+This project is open-source. Please check the repository structure or contact the author for licensing details.
 
 ---
-
-A polished, lightweight, high-performance single-header utility library for C++ automation scripts, game jams, and fast console prototyping. 
-
-This is an optimized and secured fork of the original `simpleHPP v0.1b` project, rewritten to meet modern C++ performance and safety standards.
-
----
-
-## 🔥 Key Features & Usage
-
-### 1. High-Performance Random Numbers
-Generates pseudo-random integers within a defined range. It uses a `static std::mt19937` engine initialized only once, ensuring maximum speed even when called millions of times per second.
-
-```cpp
-// Returns a random number between 1 and 100 (swaps min/max automatically if inverted)
-int enemy_hp = simple::randint(1, 100); 
-```
-
-### 2. Streamlined Safe Console Input
-Solves the infamous C++ bug where residual newline characters (`\n`) left over from `std::cin >>` cause subsequent `std::getline` calls to skip user input.
-
-```cpp
-std::string username = simple::input("Enter your nickname: ");
-```
-
-### 3. Code Execution Profiler (`Timer`)
-A zero-overhead, highly versatile stopwatch class using `<chrono>`. It provides unified measurements in different time intervals and floating-point seconds.
-
-```cpp
-simple::Timer t;
-t.start();
-
-// ... your heavy code here ...
-
-t.end();
-std::cout << "Time elapsed: " << t.getTimeX() << " seconds." << std::endl;
-std::cout << "Time in milliseconds: " << t.getTime(simple::TimeUnit::Milliseconds) << " ms" << std::endl;
-```
-
-### 4. Non-crashing Progress Bar Generator
-Generates a stylized percentage indicator string (`[#####-----] 50%`) with range clamping to ensure the application never aborts unexpectedly.
-
-```cpp
-std::cout << simple::genProgressBar(75) << std::endl; // Output: [#######---] 75%
-```
-
-### 5. Instant Screen Clearing
-Clears the terminal workspace and returns the cursor to the top-left position. It bypasses slow system sub-processes by utilizing modern terminal control codes.
-
-```cpp
-simple::ccls(); // Instant, cross-platform refresh
-```
-
----
-
-## 🛠️ Comparison & Upgrades (v0.1b vs v0.1c)
-
-Here is a detailed breakdown of critical issues present in the old `v0.1b` release and how we resolved them in `v0.1c`:
-
-| Feature | Original v0.1b Implementation | Upgraded v0.1c Implementation | Why this matters |
-| :--- | :--- | :--- | :--- |
-| **`randint()` Engine** | Re-instantiated a heavy `std::mt19937` generator and polled `std::random_device` on **every single call**. | Shifted the random engine to a `static` layout inside the function body. | **Massive performance boost.** Generating numbers in loops no longer chokes the CPU. Added protection against inverted bounds (`min > max`). |
-| **`input()` Stability** | Used platform-dependent macros (`#if defined(_WIN32)`) and dangerous loop-bound checking via `std::cin.peek()`. | Cleaned into an elegant, standard-compliant `std::cin` validation that discards `\n` without freezing. | **Fixed execution freezes on Unix (Linux/macOS) systems.** Added state recovery via `std::cin.clear()`. |
-| **`Timer` Architecture** | Duplicated code blocks 4 times inside the logic, lacked `const` safety qualifiers, and only returned integers. | Removed duplication using modern type-inference (`auto`) with ternary operators. Added `const` protection and a dedicated `getTimeX()` helper. | **Better code health (DRY) and flexibility.** The timer can now be read by read-only references and returns continuous floating-point seconds (`double`). |
-| **`genProgressBar()`** | Contained a typo (`gen_progres_bar`) and strictly terminated the application via `std::abort()` if outside bounds. | Renamed cleanly (`genProgressBar`), removed native `assert`/`abort`, and introduced safe range saturation. | **Application resiliency.** Passing `-5` or `120` to the progress bar will seamlessly clamp to `0` or `100` instead of instantly crashing your app. |
-| **`ccls()` Execution** | Ran heavy shell system utilities (`std::system("cls" / "clear")`) that spawn sub-processes. | Swapped to native ANSI escape sequences (`\033[2J\033[H`). | **Security & Speed.** Completely safe from Command Injection vulnerabilities and operates exponentially faster. |
-
-Developed with ❤️ to make basic C++ command workflows easy and reliable.
-
-<br>
-<br>
-<hr>
-<br>
-<br>
-
-# simpleHPP (V0.1C) 🇷🇺 [Русская Версия]
-
-Улучшенная, легковесная и высокопроизводительная утилитная библиотека из одного заголовочного файла (`single-header`) для автоматизации скриптов на C++, гейм-джемов и быстрого прототипирования консольных приложений.
-
-Это оптимизированный и безопасный форк оригинального проекта `simpleHPP v0.1b`, переписанный в соответствии с современными стандартами производительности и безопасности C++.
-
----
-
-## 🔥 Основные возможности и использование
-
-### 1. Высокопроизводительный рандом
-Генерирует псевдослучайные целые числа в заданном диапазоне. Использует движок `static std::mt19937`, который инициализируется всего один раз, что обеспечивает максимальную скорость работы, даже если вызывать функцию миллионы раз в секунду.
-
-```cpp
-// Возвращает случайное число от 1 до 100 (автоматически меняет min/max местами при инверсии)
-int enemy_hp = simple::randint(1, 100); 
-```
-
-### 2. Безопасный консольный ввод
-Решает знаменитый баг C++, когда остаточные символы новой строки (`\n`), оставшиеся после `std::cin >>`, заставляют последующие вызовы `std::getline` просто пропускать ввод пользователя.
-
-```cpp
-std::string username = simple::input("Введите ваш никнейм: ");
-```
-
-### 3. Профайлер времени выполнения (`Timer`)
-Высокоточный секундомер без накладных расходов, использующий библиотеку `<chrono>`. Предоставляет унифицированные измерения в различных интервалах времени и секундах с плавающей запятой.
-
-```cpp
-simple::Timer t;
-t.start();
-
-// ... ваш тяжелый код ...
-
-t.end();
-std::cout << "Прошло времени: " << t.getTimeX() << " секунд." << std::endl;
-std::cout << "Время в миллисекундах: " << t.getTime(simple::TimeUnit::Milliseconds) << " мс" << std::endl;
-```
-
-### 4. Безопасный генератор прогресс-бара
-Генерирует стилизованную строку индикатора выполнения (`[#####-----] 50%`) с ограничением диапазона, что гарантирует, что приложение никогда аварийно не завершится из-за некорректных процентов.
-
-```cpp
-std::cout << simple::genProgressBar(75) << std::endl; // Вывод: [#######---] 75%
-```
-
-### 5. Мгновенная очистка экрана
-Очищает рабочее пространство терминала и возвращает курсор в верхнюю левую позицию. Работает в обход медленных системных процессов ОС за счет использования современных управляющих кодов терминала.
-
-```cpp
-simple::ccls(); // Мгновенное кроссплатформенное обновление
-```
-
----
-
-## 🛠️ Сравнение и улучшения (v0.1b vs v0.1c)
-
-Ниже приведен подробный разбор критических проблем, присутствовавших в старом релизе `v0.1b`, и то, как мы исправили их в `v0.1c`:
-
-| Функция | Реализация в оригинальной v0.1b | Улучшения в версии v0.1c | Почему это важно |
-| :--- | :--- | :--- | :--- |
-| **Движок `randint()`** | Создавал тяжелый объект `std::mt19937` и опрашивал системный `std::random_device` при **каждом вызове функции**. | Движок генерации перенесен в `static` структуру внутри тела функции. | **Огромный прирост производительности.** Генерация чисел в циклах больше не душит процессор. Добавлена защита от перепутанных границ диапазона (`min > max`). |
-| **Стабильность `input()`** | Использовала платформозависимые макросы (`#if defined(_WIN32)`) и опасную логику проверки буфера через `std::cin.peek()`. | Переписана в элегантную, стандартную валидацию потока `std::cin`, которая сбрасывает `\n` без зависаний. | **Исправлены «мертвые» зависания на Unix-системах (Linux/macOS).** Добавлено восстановление состояния потока через `std::cin.clear()`. |
-| **Архитектура `Timer`** | Код дублировался 4 раза внутри логики, отсутствовали квалификаторы константной безопасности `const`, возвращались только целые числа. | Дублирование удалено с помощью вывода типов `auto` и тернарных операторов. Добавлена `const`-защита и метод `getTimeX()`. | **Чистота кода (DRY) и гибкость.** Таймер теперь можно считывать по константным ссылкам, и он умеет возвращать непрерывные секунды типа `double`. |
-| **`genProgressBar()`** | Содержала орфографическую опечатку (`gen_progres_bar`) и намертво убивала приложение через `std::abort()`, если процент выходил за границы. | Имя исправлено на `genProgressBar`, удалены жесткие `assert`/`abort`, введено мягкое насыщение диапазона. | **Устойчивость приложения.** Передача значений вроде `-5` или `120` аккуратно приведется к `0` или `100` вместо мгновенного вылета всей программы. |
-| **Выполнение `ccls()`** | Запускала тяжелые системные утилиты командной строки (`std::system("cls" / "clear")`), порождающие сторонние процессы. | Заменена на прямую отправку встроенных управляющих ANSI-последовательностей (`\033[2J\033[H`). | **Безопасность и скорость.** Полная защита от уязвимостей типа Command Injection, а скорость работы увеличилась в сотни раз. |
-
-Разработано с ❤️, чтобы сделать базовые операции в C++ простыми, быстрыми и надежными.
+**Author:** danrau  
+**Email:** [blink.dagger1337@icloud.com](mailto:blink.dagger1337@icloud.com)  
+**GitHub:** [danrau/simpleHPP](https://github.com/danrau/simpleHPP)
